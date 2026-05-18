@@ -1,0 +1,3 @@
+[submodule "fxhoudinimcp"]
+	path = fxhoudinimcp
+	url = https://github.com/healkeiser/fxhoudinimcp.git

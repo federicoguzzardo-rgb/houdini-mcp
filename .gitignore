@@ -1,0 +1,18 @@
+# Machine-specific MCP config (contains local paths)
+.mcp.json
+
+# Houdini temp files
+*.bak
+*.hip_backup
+*.hipnc_backup
+*.hiplc_backup
+
+# Cache dirs
+geo/
+sim/
+render/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
