@@ -1,0 +1,81 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {"type":"text","id":"title","x":353,"y":20,"width":495,"height":37,"text":"Claude Code — Houdini MCP Stack","fontSize":30,"fontFamily":1,"textAlign":"left","verticalAlign":"top","strokeColor":"#1e1e1e"},
+    {"type":"text","id":"sub","x":420,"y":58,"width":380,"height":25,"text":"Three-layer connection architecture","fontSize":20,"fontFamily":1,"textAlign":"left","verticalAlign":"top","strokeColor":"#757575"},
+
+    {"type":"rectangle","id":"zone1","x":50,"y":78,"width":1100,"height":222,"backgroundColor":"#dbe4ff","fillStyle":"solid","strokeColor":"#4a9eed","strokeWidth":1,"roundness":{"type":3},"opacity":70},
+    {"type":"text","id":"z1lbl","x":68,"y":86,"width":200,"height":23,"text":"Layer 1 — Client","fontSize":18,"fontFamily":1,"textAlign":"left","verticalAlign":"top","strokeColor":"#2563eb"},
+
+    {"type":"rectangle","id":"claude","x":410,"y":100,"width":380,"height":75,"backgroundColor":"#a5d8ff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#2563eb","strokeWidth":2,"boundElements":[{"type":"text","id":"claude_t"}]},
+    {"type":"text","id":"claude_t","x":410,"y":100,"width":380,"height":75,"text":"Claude Code CLI\nclaude-sonnet-4-6","fontSize":20,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"claude","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l1s1","x":88,"y":195,"width":245,"height":70,"backgroundColor":"#c3fae8","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#06b6d4","strokeWidth":1,"boundElements":[{"type":"text","id":"l1s1_t"}]},
+    {"type":"text","id":"l1s1_t","x":88,"y":195,"width":245,"height":70,"text":"Memory System\n& Context Window","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l1s1","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l1s2","x":348,"y":195,"width":245,"height":70,"backgroundColor":"#fff3bf","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#f59e0b","strokeWidth":1,"boundElements":[{"type":"text","id":"l1s2_t"}]},
+    {"type":"text","id":"l1s2_t","x":348,"y":195,"width":245,"height":70,"text":"CLAUDE.md\nProject Config","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l1s2","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l1s3","x":608,"y":195,"width":245,"height":70,"backgroundColor":"#a5d8ff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#4a9eed","strokeWidth":1,"boundElements":[{"type":"text","id":"l1s3_t"}]},
+    {"type":"text","id":"l1s3_t","x":608,"y":195,"width":245,"height":70,"text":"MCP Client\nBuilt-in","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l1s3","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l1s4","x":868,"y":195,"width":245,"height":70,"backgroundColor":"#eebefa","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#ec4899","strokeWidth":1,"boundElements":[{"type":"text","id":"l1s4_t"}]},
+    {"type":"text","id":"l1s4_t","x":868,"y":195,"width":245,"height":70,"text":"Skills &\nPrompt Cache","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l1s4","lineHeight":1.25},
+
+    {"type":"arrow","id":"a1","x":600,"y":300,"width":0,"height":55,"points":[[0,0],[0,55]],"strokeColor":"#4a9eed","strokeWidth":3,"endArrowhead":"arrow"},
+    {"type":"text","id":"a1lbl","x":615,"y":318,"width":350,"height":23,"text":"MCP tools/call  (JSON over TCP)","fontSize":18,"fontFamily":1,"textAlign":"left","verticalAlign":"top","strokeColor":"#2563eb"},
+
+    {"type":"rectangle","id":"zone2","x":50,"y":355,"width":1100,"height":245,"backgroundColor":"#e5dbff","fillStyle":"solid","strokeColor":"#8b5cf6","strokeWidth":1,"roundness":{"type":3},"opacity":70},
+    {"type":"text","id":"z2lbl","x":68,"y":363,"width":240,"height":23,"text":"Layer 2 — MCP Server","fontSize":18,"fontFamily":1,"textAlign":"left","verticalAlign":"top","strokeColor":"#6d28d9"},
+
+    {"type":"rectangle","id":"mcp","x":390,"y":378,"width":420,"height":75,"backgroundColor":"#d0bfff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#6d28d9","strokeWidth":2,"boundElements":[{"type":"text","id":"mcp_t"}]},
+    {"type":"text","id":"mcp_t","x":390,"y":378,"width":420,"height":75,"text":"fxhoudinimcp  1.0.0\nPython 3.12  |  port 8100  |  168 tools","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"mcp","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l2s1","x":70,"y":468,"width":200,"height":65,"backgroundColor":"#ffd8a8","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#f59e0b","strokeWidth":1,"boundElements":[{"type":"text","id":"l2s1_t"}]},
+    {"type":"text","id":"l2s1_t","x":70,"y":468,"width":200,"height":65,"text":"SOP Tools\nGeometry","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l2s1","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l2s2","x":285,"y":468,"width":200,"height":65,"backgroundColor":"#d0bfff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#8b5cf6","strokeWidth":1,"boundElements":[{"type":"text","id":"l2s2_t"}]},
+    {"type":"text","id":"l2s2_t","x":285,"y":468,"width":200,"height":65,"text":"Materials\n& Lights","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l2s2","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l2s3","x":500,"y":468,"width":200,"height":65,"backgroundColor":"#c3fae8","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#06b6d4","strokeWidth":1,"boundElements":[{"type":"text","id":"l2s3_t"}]},
+    {"type":"text","id":"l2s3_t","x":500,"y":468,"width":200,"height":65,"text":"USD / Solaris\nLOP Tools","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l2s3","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l2s4","x":715,"y":468,"width":200,"height":65,"backgroundColor":"#ffc9c9","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#ef4444","strokeWidth":1,"boundElements":[{"type":"text","id":"l2s4_t"}]},
+    {"type":"text","id":"l2s4_t","x":715,"y":468,"width":200,"height":65,"text":"Simulation\nDOP & FLIP","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l2s4","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l2s5","x":930,"y":468,"width":200,"height":65,"backgroundColor":"#b2f2bb","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#22c55e","strokeWidth":1,"boundElements":[{"type":"text","id":"l2s5_t"}]},
+    {"type":"text","id":"l2s5_t","x":930,"y":468,"width":200,"height":65,"text":"Rendering\nCOP / CHOP","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l2s5","lineHeight":1.25},
+
+    {"type":"arrow","id":"a2","x":600,"y":600,"width":0,"height":55,"points":[[0,0],[0,55]],"strokeColor":"#22c55e","strokeWidth":3,"endArrowhead":"arrow"},
+    {"type":"text","id":"a2lbl","x":615,"y":618,"width":360,"height":23,"text":"hou Python API  (in-process call)","fontSize":18,"fontFamily":1,"textAlign":"left","verticalAlign":"top","strokeColor":"#15803d"},
+
+    {"type":"rectangle","id":"zone3","x":50,"y":655,"width":1100,"height":225,"backgroundColor":"#d3f9d8","fillStyle":"solid","strokeColor":"#22c55e","strokeWidth":1,"roundness":{"type":3},"opacity":70},
+    {"type":"text","id":"z3lbl","x":68,"y":663,"width":240,"height":23,"text":"Layer 3 — Houdini DCC","fontSize":18,"fontFamily":1,"textAlign":"left","verticalAlign":"top","strokeColor":"#15803d"},
+
+    {"type":"rectangle","id":"houdini","x":390,"y":676,"width":420,"height":75,"backgroundColor":"#b2f2bb","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#15803d","strokeWidth":2,"boundElements":[{"type":"text","id":"houdini_t"}]},
+    {"type":"text","id":"houdini_t","x":390,"y":676,"width":420,"height":75,"text":"Houdini 19.5.716\nPython 3.9.10  |  hou module","fontSize":20,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"houdini","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l3s1","x":74,"y":766,"width":163,"height":65,"backgroundColor":"#a5d8ff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#4a9eed","strokeWidth":1,"boundElements":[{"type":"text","id":"l3s1_t"}]},
+    {"type":"text","id":"l3s1_t","x":74,"y":766,"width":163,"height":65,"text":"SOPs\nGeometry","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l3s1","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l3s2","x":252,"y":766,"width":163,"height":65,"backgroundColor":"#c3fae8","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#06b6d4","strokeWidth":1,"boundElements":[{"type":"text","id":"l3s2_t"}]},
+    {"type":"text","id":"l3s2_t","x":252,"y":766,"width":163,"height":65,"text":"LOPs\nUSD/Solaris","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l3s2","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l3s3","x":430,"y":766,"width":163,"height":65,"backgroundColor":"#ffc9c9","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#ef4444","strokeWidth":1,"boundElements":[{"type":"text","id":"l3s3_t"}]},
+    {"type":"text","id":"l3s3_t","x":430,"y":766,"width":163,"height":65,"text":"DOPs\nSimulation","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l3s3","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l3s4","x":608,"y":766,"width":163,"height":65,"backgroundColor":"#fff3bf","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#f59e0b","strokeWidth":1,"boundElements":[{"type":"text","id":"l3s4_t"}]},
+    {"type":"text","id":"l3s4_t","x":608,"y":766,"width":163,"height":65,"text":"COPs\nCompositing","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l3s4","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l3s5","x":786,"y":766,"width":163,"height":65,"backgroundColor":"#eebefa","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#ec4899","strokeWidth":1,"boundElements":[{"type":"text","id":"l3s5_t"}]},
+    {"type":"text","id":"l3s5_t","x":786,"y":766,"width":163,"height":65,"text":"CHOPs\nChannels","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l3s5","lineHeight":1.25},
+
+    {"type":"rectangle","id":"l3s6","x":964,"y":766,"width":163,"height":65,"backgroundColor":"#ffd8a8","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#f59e0b","strokeWidth":1,"boundElements":[{"type":"text","id":"l3s6_t"}]},
+    {"type":"text","id":"l3s6_t","x":964,"y":766,"width":163,"height":65,"text":"TOPs\nPDG Pipeline","fontSize":18,"fontFamily":1,"textAlign":"center","verticalAlign":"middle","strokeColor":"#1e1e1e","containerId":"l3s6","lineHeight":1.25}
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  }
+}
