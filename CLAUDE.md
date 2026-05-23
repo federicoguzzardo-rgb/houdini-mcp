@@ -5,6 +5,10 @@
 - Root: C:\houdini
 - Git: initialized at C:\houdini\.git
 
+## Quick Start
+- Start MCP server: `fxhoudinimcp.exe` (connects on 127.0.0.1:8100)
+- Houdini must be open and running before starting the server
+
 ## Pipeline Context
 - Software: SideFX Houdini 19.5.716
 - Houdini Python: 3.9.10 (bundled hython)
