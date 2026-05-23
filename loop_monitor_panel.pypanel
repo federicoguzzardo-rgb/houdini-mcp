@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pythonPanelDocument>
+  <interface name="loop_monitor" label="Loop Monitor"
+             icon="MISC_python" help_url="">
+    <script><![CDATA[
+import importlib
+import sys
+from pathlib import Path
+
+# point this at the repo root if it's not on PYTHONPATH already
+import hou
+repo_root = hou.text.expandString("$HOUDINI_AGENTIC_ROOT") or r"C:\houdini"
+if repo_root not in sys.path:
+    sys.path.insert(0, repo_root)
+
+import loop_monitor.panel as panel
+importlib.reload(panel)          # dev convenience: pick up edits on reopen
+
+
+def onCreateInterface():
+    return panel.LoopMonitorPanel()
+]]></script>
+    <help><![CDATA[
+Loop Monitor — tails runs/<run_id>/events.jsonl and paints loop state on the
+network editor (blue = touched, red = cook error, green = ok).
+
+Setup:
+  1. Set HOUDINI_AGENTIC_ROOT to the repo root (e.g. C:\houdini)
+     or rely on the default `C:\houdini` baked into this wrapper.
+  2. Windows > Python Panel Editor > gear menu > Import file…
+     and select this .pypanel.
+  3. Add a pane tab: pane menu > New Pane Tab Type > Python Panel > Loop Monitor.
+]]></help>
+  </interface>
+</pythonPanelDocument>

@@ -1,18 +1,27 @@
-# Machine-specific MCP config (contains local paths)
-.mcp.json
-
-# Houdini temp files
-*.bak
-*.hip_backup
-*.hipnc_backup
-*.hiplc_backup
-
-# Cache dirs
-geo/
-sim/
-render/
-
-# Python
+﻿# Runtime outputs — never commit
+runs/
 __pycache__/
 *.pyc
 *.pyo
+
+# Houdini scene files (binary)
+*.hip
+*.hiplc
+*.hipnc
+
+# Logs and temp
+monitor.log
+*.log
+
+# Screenshots / renders
+screenshots/
+render/
+
+# Machine-specific config (edit per-machine)
+.mcp.json
+
+# Python env
+.venv/
+*.egg-info/
+dist/
+build/

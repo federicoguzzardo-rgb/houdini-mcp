@@ -1,0 +1,209 @@
+# Houdini Agentic System — Multi-Agent Workflow Implementation Plan
+
+## Context
+
+The Cowork/INSTRUCTIONS.md and project-docs/ describe a fully designed agentic system for controlling SideFX Houdini via natural language. The architecture, event schema, agent roles, and monitoring UI are specified in detail. Nothing has been implemented yet. This plan lays out the build order following the `§17 Suggested Next Steps` from the project brief, grounded in the exact code stubs already written in the design docs.
+
+The research goal is the **feedback loop quality**, not generation. The architecture's key innovation is a **dual-critic gated loop** (behavioral → VLM) with a dedicated Translator agent that prevents the perception/action collapse that makes comparable systems fragile.
+
+---
+
+## Architecture (shape of the system)
+
+```mermaid
+flowchart TD
+    NL[Natural Language Prompt] --> ORC[Orchestrator\nloop state, backtracking]
+    ORC --> TR[Translator\nperception → action]
+    TR --> ED[Editor\npure executor via MCP]
+    ED --> BC[Behavioral Critic\nhython parametric sweep]
+    BC -->|FAIL: fix structure first| TR
+    BC -->|PASS| VLM[VLM Critic\n4-view render → GPT-4V]
+    VLM --> TR
+    TR --> CJ[Convergence Judge\ncontinue / done / stuck]
+    CJ -->|continue| ORC
+    CJ -->|done| OUT[Done]
+    CJ -->|stuck| ESC[Escalation\naskuser / backtrack / structural mode]
+    ED --> EL[events.jsonl\nruns/<run_id>/]
+    EL --> MON[Loop Monitor UI\nStreamlit or In-Houdini Panel]
+```
+
+---
+
+## Build Order
+
+### Phase 1 — Event infrastructure (no Houdini required)
+
+**File: `monitor/eventlog.py`**
+Implement exactly as specified in `loop-monitor-ui-brief.md §0`. This module is the only coupling between agents and UIs.
+- `read_events(path)` — tolerates partial trailing lines
+- `group_by_iteration(events)` → `{n: {number, events[]}}`
+- `find_event(iteration, agent)` → last payload from that agent in the bucket
+- `latest_status(events)` → `{state, iteration}`
+- `build_convergence_series(iters)` → rows for the chart
+
+**File: `agents/emit.py`**
+Single helper used by every agent. Appends one JSON line to `runs/<run_id>/events.jsonl`. Envelope shape from project brief §14:
+```python
+def emit(run_id, iteration, step_id, agent, event_type, payload, duration_ms=0):
+    ...  # write to runs/{run_id}/events.jsonl
+```
+
+**File: `runs/`**
+Directory created at runtime per `run_id` (uuid4). Each run gets its own subdir: `runs/<run_id>/events.jsonl`, `runs/<run_id>/snapshots/`, `runs/<run_id>/renders/`.
+
+---
+
+### Phase 2 — Streamlit monitor (mock data, no Houdini)
+
+**File: `monitor/app.py`**
+Implement exactly as specified in `loop-monitor-ui-brief.md §Approach A`. Flesh out the `TODO` stubs:
+- Node-graph diff panel: show `translator.actions` (asked-for) vs `editor.actions` (actually changed) side by side
+- Wire `--run-id` CLI arg and sidebar run-picker
+- `@st.fragment(run_every=2)` for auto-refresh
+
+**File: `scripts/mock_run.py`**
+Emit synthetic events.jsonl to validate the dashboard before any Houdini is wired. Cover: behavioral fail → VLM critique → translator action → editor log → convergence judge with `intent_match` and `behavioral_pass_rate` evolving across 5 iterations.
+
+Run: `streamlit run monitor/app.py -- --run-id mock-01`
+
+---
+
+### Phase 3 — Multi-agent loop skeleton (mocked Houdini responses)
+
+**File layout:**
+```
+agents/
+  orchestrator.py     ← loop state machine
+  translator.py       ← VLM feedback → Houdini action list
+  editor.py           ← action list → hou API calls (mocked first)
+  behavioral_critic.py
+  vlm_critic.py
+  convergence_judge.py
+  emit.py
+```
+
+**`agents/orchestrator.py`**
+- Holds `run_id`, `iteration` counter, `.hip` snapshot list
+- Drives the loop: `initial_creation → auto_refinement → [stuck escalation]`
+- Calls agents in order; passes typed payloads between them
+- Calls `emit()` for the `orchestrator` step
+
+**`agents/translator.py`**
+- Input: merged behavioral + perceptual critique JSON, current node-graph JSON
+- Output: action list with `node`, `parm`, `change`, `rationale`
+- Two modes (set via `mode` field): `parametric` (tweak parms) / `structural` (rebuild subgraph)
+- Mode switch triggered by Convergence Judge returning `stuck`
+
+**`agents/editor.py`**
+- Takes action list; calls `hou` API (initially via a mock `HoudiniClient`)
+- Logs each action: `node_path`, `call`, `result`, `before`, `after` — **always include `node_path`** (hrpyc proxy limitation documented in §8)
+- Reports back to Translator, not Critic
+- Uses fxhoudinimcp MCP tools for actual execution (Phase 4)
+
+**`agents/behavioral_critic.py`**
+- Runs via `hython` (headless, no GUI) — subprocess call from orchestrator
+- Implements the pseudocode from project brief §7 exactly:
+  1. Structural invariants (manifold, degenerate prims, NaN positions, nonzero geo)
+  2. Parametric sweep: N=5 samples across each exposed parameter range, cook, check
+  3. Frame sweep if time-dependent
+- Returns typed JSON: `{passed, structural[], parametric[]}`
+
+**`agents/vlm_critic.py`**
+- Gated: only called if behavioral_critic returned `passed: true`
+- Assembles 4-view observation package: front/side/top/persp + wireframe + annotated overlays
+- Calls GPT-4V (or Claude with vision) with pairwise prompt (current vs previous iteration)
+- Rubric-based output: `{intent_match: float, issues: [{type, description, priority}]}`
+- Saves composed render to `runs/<run_id>/renders/` and puts path in `observation_ref`
+
+**`agents/convergence_judge.py`**
+- Text-only, lightweight
+- Input: history of `intent_match`, `behavioral_pass_rate`, iteration count
+- Decision logic:
+  - `done`: `behavioral.passed AND intent_match >= 0.8 AND delta < 0.05`
+  - `stuck`: no improvement in last 3 iterations
+  - `continue`: otherwise
+
+---
+
+### Phase 4 — Live Houdini bridge
+
+**`agents/houdini_client.py`**
+Thin wrapper. Switches between:
+- **fxhoudinimcp** (primary): MCP tool calls via the installed bridge for day-to-day node operations
+- **hrpyc** (direct `hou` access): for orchestrator-level queries, parametric sweeps in behavioral critic
+
+Always use `node_path` strings, never rpyc proxy objects (§8 design decision).
+
+Behavioral critic subprocess: `hython behavioral_critic_runner.py --node-path /obj/geo1/box1 --run-id <uuid> --iteration <n>`
+
+---
+
+### Phase 5 — In-Houdini Panel (Approach B)
+
+**`loop_monitor/panel.py`** and **`loop_monitor/graphpaint.py`**
+Implement exactly as specified in `loop-monitor-ui-brief.md §Approach B`.
+- `panel.py`: QTimer poll at 2000ms, run picker, status label, text convergence list, iteration detail, paint toggle
+- `graphpaint.py`: colour nodes blue (touched), red (error), green (ok) using `node.setColor()` + `node.setUserData("loop_monitor_painted", "1")` to track only our marks
+- Registration: `.pypanel` XML wrapper with `importlib.reload` for dev convenience
+
+---
+
+## Event Schema (enforced across all agents)
+
+Every `emit()` call uses this envelope (project brief §14):
+```json
+{
+  "run_id": "uuid",
+  "iteration": 4,
+  "step_id": "4.2",
+  "agent": "behavioral_critic",
+  "event_type": "result",
+  "timestamp": "ISO-8601",
+  "duration_ms": 340,
+  "payload": {}
+}
+```
+Editor payload **must** include `node_path` per action. This is non-negotiable due to hrpyc proxy limitation and is needed by graphpaint.py.
+
+---
+
+## VEX / Houdini Coding Rules (enforced in all generated code)
+
+From CLAUDE.md — critical ones for the agent system:
+- Always declare types explicitly in VEX: `v@vel`, `i@id`, `f@mass`
+- Use `prim(0, "attr_name", @primnum)` not `primattrib()`
+- Use `rint()` not `round()`
+- `removepoint()` in loops: collect indices, remove after
+- In LOPs: use `usd_attrib()` / `usd_setattrib()`, not `@P`/`@Cd`/`@N`
+
+---
+
+## Verification
+
+1. **Phase 1**: `python -c "from monitor.eventlog import read_events; print(read_events('test.jsonl'))"` — no import errors
+2. **Phase 2**: `python scripts/mock_run.py && streamlit run monitor/app.py -- --run-id mock-01` — dashboard shows timeline + convergence chart with 5 iterations
+3. **Phase 3**: `python agents/orchestrator.py --prompt "create a box" --mock` — events.jsonl written, all 5 agents emit, convergence judge resolves
+4. **Phase 4**: With Houdini open and fxhoudinimcp running on port 8100, orchestrator creates/modifies nodes, behavioral critic subprocess runs via hython and returns typed JSON
+5. **Phase 5**: Import `loop_monitor_panel.pypanel` in Houdini Python Panel Editor; open loop monitor pane tab; nodes paint correctly on mock events.jsonl
+
+---
+
+## Files to Create
+
+| File | From spec |
+|---|---|
+| `monitor/eventlog.py` | loop-monitor-ui-brief.md §0 (complete stub) |
+| `monitor/app.py` | loop-monitor-ui-brief.md §Approach A (complete stub) |
+| `agents/emit.py` | project-brief.md §14 envelope |
+| `agents/orchestrator.py` | project-brief.md §5 |
+| `agents/translator.py` | project-brief.md §5.2 |
+| `agents/editor.py` | project-brief.md §5.3, loop-monitor-ui-brief §0 editor schema |
+| `agents/behavioral_critic.py` | project-brief.md §7 pseudocode |
+| `agents/vlm_critic.py` | project-brief.md §5.1, §6 |
+| `agents/convergence_judge.py` | project-brief.md §5.4 |
+| `agents/houdini_client.py` | INSTRUCTIONS.md §3, §3.3 bridge decision |
+| `scripts/mock_run.py` | (new) test harness for dashboard |
+| `loop_monitor/__init__.py` | loop-monitor-ui-brief.md §Approach B |
+| `loop_monitor/panel.py` | loop-monitor-ui-brief.md §Approach B (complete stub) |
+| `loop_monitor/graphpaint.py` | loop-monitor-ui-brief.md §Approach B (complete stub) |
+| `loop_monitor_panel.pypanel` | loop-monitor-ui-brief.md §Approach B XML wrapper |
