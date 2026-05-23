@@ -1,3 +1,15 @@
 [submodule "fxhoudinimcp"]
 	path = fxhoudinimcp
 	url = https://github.com/healkeiser/fxhoudinimcp.git
+[submodule "Cowork/fxhoudinimcp"]
+	path = Cowork/fxhoudinimcp
+	url = https://github.com/healkeiser/fxhoudinimcp.git
+[submodule "Cowork/GPTEval3D"]
+	path = Cowork/GPTEval3D
+	url = https://github.com/3DTopia/GPTEval3D.git
+[submodule "Cowork/houdini-mcp"]
+	path = Cowork/houdini-mcp
+	url = https://github.com/oculairmedia/houdini-mcp.git
+[submodule "Cowork/ll3m"]
+	path = Cowork/ll3m
+	url = https://github.com/threedle/ll3m.git
