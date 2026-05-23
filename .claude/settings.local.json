@@ -49,7 +49,17 @@
       "PowerShell(cmd /c \"type C:\\\\Users\\\\feder\\\\OneDrive\\\\Documents\\\\houdini19.5\\\\packages\\\\fxhoudinimcp.json\" 2>&1)",
       "PowerShell(cmd /c \"dir /s /b C:\\\\Users\\\\feder\\\\OneDrive\\\\Documents\\\\houdini19.5\\\\fxhoudinimcp\" 2>&1)",
       "mcp__fxhoudini__set_frame_range",
-      "mcp__fxhoudini__create_wrangle"
+      "mcp__fxhoudini__create_wrangle",
+      "mcp__fxhoudini__find_nodes",
+      "mcp__fxhoudini__get_geometry_info",
+      "mcp__fxhoudini__get_attrib_values",
+      "mcp__fxhoudini__get_wrangle_code",
+      "mcp__fxhoudini__set_wrangle_code",
+      "mcp__fxhoudini__get_points",
+      "mcp__fxhoudini__disconnect_node",
+      "mcp__fxhoudini__connect_nodes",
+      "mcp__fxhoudini__frame_all",
+      "mcp__excalidraw__read_me"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -56,6 +56,3 @@
 ## Session Behaviour
 - Break complex tasks into checkpoints — confirm with a viewport screenshot at each
 - If a cook error appears, stop and diagnose before continuing
-
-## Task-Specific Specs
-@.claude/procedural_sand_dune_hda.md
