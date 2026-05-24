@@ -1,0 +1,1639 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "houdini-mcp",
+    "languages": [
+      "Python",
+      "Markdown",
+      "JSON"
+    ],
+    "frameworks": [
+      "Anthropic Claude API",
+      "Streamlit",
+      "asyncio",
+      "PySide2",
+      "fxhoudinimcp"
+    ],
+    "description": "Agentic pipeline connecting Claude Code to SideFX Houdini 19.5 via MCP, with dual-critic gated loop and live Houdini bridge",
+    "analyzedAt": "2026-05-24T05:25:49.179899+00:00",
+    "gitCommitHash": "af277e9d61882febd8b86c4cd875a4f1e6203dd4"
+  },
+  "nodes": [
+    {
+      "id": "file:agents/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "agents/__init__.py",
+      "summary": "Empty package initializer for the agents module.",
+      "tags": [
+        "package",
+        "init",
+        "agents"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:agents/behavioral_checks.py",
+      "type": "file",
+      "name": "behavioral_checks.py",
+      "filePath": "agents/behavioral_checks.py",
+      "summary": "Pure Houdini behavioral check primitives shared between the live fxhoudinimcp bridge and the hython subprocess runner. Implements structural invariants, parametric sweeps, and frame sweeps per project brief \u00c2\u00a77.",
+      "tags": [
+        "behavioral",
+        "checks",
+        "houdini",
+        "validation",
+        "hou"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:agents/behavioral_checks.py:_sample_range",
+      "type": "function",
+      "name": "_sample_range",
+      "filePath": "agents/behavioral_checks.py",
+      "summary": "Generates N evenly-spaced sample values between lo and hi for parametric sweeps.",
+      "tags": [
+        "utility",
+        "sampling",
+        "parametric"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:agents/behavioral_checks.py:structural_checks",
+      "type": "function",
+      "name": "structural_checks",
+      "filePath": "agents/behavioral_checks.py",
+      "summary": "Runs manifold, degenerate primitive, NaN position, and nonzero geometry checks on a Houdini geometry object.",
+      "tags": [
+        "structural",
+        "validation",
+        "geometry",
+        "houdini"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:agents/behavioral_checks.py:parametric_sweep",
+      "type": "function",
+      "name": "parametric_sweep",
+      "filePath": "agents/behavioral_checks.py",
+      "summary": "Sweeps each named parameter across its range in N samples, cooking the node and checking for empty output at each sample.",
+      "tags": [
+        "parametric",
+        "sweep",
+        "validation",
+        "houdini"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:agents/behavioral_checks.py:frame_sweep",
+      "type": "function",
+      "name": "frame_sweep",
+      "filePath": "agents/behavioral_checks.py",
+      "summary": "Cooks a time-dependent node at specified frames and records pass/fail for each.",
+      "tags": [
+        "frame",
+        "sweep",
+        "time-dependent",
+        "houdini"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:agents/behavioral_checks.py:evaluate",
+      "type": "function",
+      "name": "evaluate",
+      "filePath": "agents/behavioral_checks.py",
+      "summary": "Public entrypoint per project brief \u00c2\u00a77 that runs all three check phases (structural, parametric, frame sweep) and returns the typed JSON payload defined by \u00c2\u00a714.",
+      "tags": [
+        "entrypoint",
+        "evaluation",
+        "validation",
+        "houdini"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:agents/behavioral_critic.py",
+      "type": "file",
+      "name": "behavioral_critic.py",
+      "filePath": "agents/behavioral_critic.py",
+      "summary": "Facade for the behavioral critic with three backends: mock (deterministic), live (ships behavioral_checks.py over the wire via fxhoudinimcp execute_python), and hython (reserved). Emits results via emit().",
+      "tags": [
+        "behavioral-critic",
+        "facade",
+        "mock",
+        "live",
+        "fxhoudinimcp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:agents/behavioral_critic.py:BehavioralCritic",
+      "type": "class",
+      "name": "BehavioralCritic",
+      "filePath": "agents/behavioral_critic.py",
+      "summary": "Selects and runs the correct behavioral evaluation backend (mock/live/hython) and emits a typed payload per project brief \u00c2\u00a714.",
+      "tags": [
+        "critic",
+        "behavioral",
+        "facade",
+        "class"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:agents/behavioral_critic_runner.py",
+      "type": "file",
+      "name": "behavioral_critic_runner.py",
+      "filePath": "agents/behavioral_critic_runner.py",
+      "summary": "Hython CLI entrypoint spawned by the orchestrator for headless post-loop validation. Loads an optional .hip file, runs behavioral_checks.evaluate(), and emits the result as a JSONL event.",
+      "tags": [
+        "hython",
+        "headless",
+        "cli",
+        "validation",
+        "subprocess"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:agents/behavioral_critic_runner.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "agents/behavioral_critic_runner.py",
+      "summary": "Parses CLI args, loads the .hip if provided, calls evaluate(), emits the result event, and prints JSON to stdout.",
+      "tags": [
+        "cli",
+        "entrypoint",
+        "hython",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:agents/convergence_judge.py",
+      "type": "file",
+      "name": "convergence_judge.py",
+      "filePath": "agents/convergence_judge.py",
+      "summary": "Lightweight convergence judge that decides continue/done/stuck based on behavioral pass and intent_match history. Implements the DONE/STUCK/CONT logic from project brief \u00c2\u00a75.4 and \u00c2\u00a78.",
+      "tags": [
+        "convergence",
+        "judge",
+        "loop-control",
+        "decision"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:agents/convergence_judge.py:ConvergenceJudge",
+      "type": "class",
+      "name": "ConvergenceJudge",
+      "filePath": "agents/convergence_judge.py",
+      "summary": "Tracks iteration history and decides whether the loop should continue, has converged (done), or is stuck (no improvement in last N iterations).",
+      "tags": [
+        "judge",
+        "convergence",
+        "history",
+        "loop"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:agents/editor.py",
+      "type": "file",
+      "name": "editor.py",
+      "filePath": "agents/editor.py",
+      "summary": "Pure executor that takes a translator action list and applies each action to Houdini via the HoudiniClient, recording results and cook errors in the emitted payload.",
+      "tags": [
+        "editor",
+        "executor",
+        "houdini",
+        "actions"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:agents/editor.py:Editor",
+      "type": "class",
+      "name": "Editor",
+      "filePath": "agents/editor.py",
+      "summary": "Iterates over action dicts (set_parm, create, cook), calls the HoudiniClient, and emits a structured result payload with before/after values and cook errors.",
+      "tags": [
+        "editor",
+        "class",
+        "actions",
+        "houdini-client"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:agents/emit.py",
+      "type": "file",
+      "name": "emit.py",
+      "filePath": "agents/emit.py",
+      "summary": "Shared event-logging helper used by every agent. Appends one JSON-line envelope per project brief \u00c2\u00a714 to runs/<run_id>/events.jsonl, and provides a Timer context manager for duration tracking.",
+      "tags": [
+        "emit",
+        "event-log",
+        "jsonl",
+        "utility",
+        "shared"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:agents/emit.py:new_run_id",
+      "type": "function",
+      "name": "new_run_id",
+      "filePath": "agents/emit.py",
+      "summary": "Generates a 12-character hex run ID from a UUID4.",
+      "tags": [
+        "utility",
+        "run-id",
+        "uuid"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:agents/emit.py:emit",
+      "type": "function",
+      "name": "emit",
+      "filePath": "agents/emit.py",
+      "summary": "Appends one JSON-line event to the run's events.jsonl file with full envelope (run_id, iteration, step_id, agent, event_type, timestamp, duration_ms, payload).",
+      "tags": [
+        "emit",
+        "event",
+        "jsonl",
+        "logging"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:agents/emit.py:Timer",
+      "type": "class",
+      "name": "Timer",
+      "filePath": "agents/emit.py",
+      "summary": "Context manager that measures elapsed wall-clock time in milliseconds for use with emit().",
+      "tags": [
+        "timer",
+        "utility",
+        "context-manager"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:agents/houdini_client.py",
+      "type": "file",
+      "name": "houdini_client.py",
+      "filePath": "agents/houdini_client.py",
+      "summary": "Thin Houdini bridge providing a Protocol interface, a MockHoudiniClient for dev/testing, and FxHoudiniMCPClient for live HTTP calls to fxhoudinimcp on 127.0.0.1:8100. Includes a make_client() factory.",
+      "tags": [
+        "houdini-client",
+        "bridge",
+        "mock",
+        "fxhoudinimcp",
+        "http"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:agents/houdini_client.py:HoudiniClient",
+      "type": "class",
+      "name": "HoudiniClient",
+      "filePath": "agents/houdini_client.py",
+      "summary": "Protocol defining the minimum surface every Houdini backend must expose: create_node, set_parm, get_parm, connect, cook, node_graph_json.",
+      "tags": [
+        "protocol",
+        "interface",
+        "houdini"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:agents/houdini_client.py:MockHoudiniClient",
+      "type": "class",
+      "name": "MockHoudiniClient",
+      "filePath": "agents/houdini_client.py",
+      "summary": "In-process mock client that tracks parm state in a dict and fakes a node graph, enabling the full pipeline to run without Houdini.",
+      "tags": [
+        "mock",
+        "client",
+        "testing",
+        "in-process"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:agents/houdini_client.py:FxHoudiniMCPClient",
+      "type": "class",
+      "name": "FxHoudiniMCPClient",
+      "filePath": "agents/houdini_client.py",
+      "summary": "Live HTTP client that POSTs mcp.execute commands to fxhoudinimcp's hwebserver on 127.0.0.1:8100, implementing the full HoudiniClient protocol plus execute_python and health check.",
+      "tags": [
+        "http-client",
+        "fxhoudinimcp",
+        "live",
+        "bridge",
+        "MCP"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:agents/houdini_client.py:HoudiniBridgeError",
+      "type": "class",
+      "name": "HoudiniBridgeError",
+      "filePath": "agents/houdini_client.py",
+      "summary": "RuntimeError subclass raised when the live fxhoudinimcp HTTP call fails or returns an error status.",
+      "tags": [
+        "error",
+        "exception",
+        "bridge"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:agents/houdini_client.py:make_client",
+      "type": "function",
+      "name": "make_client",
+      "filePath": "agents/houdini_client.py",
+      "summary": "Factory function that returns either a MockHoudiniClient or FxHoudiniMCPClient based on the mode string.",
+      "tags": [
+        "factory",
+        "client",
+        "mode"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:agents/orchestrator.py",
+      "type": "file",
+      "name": "orchestrator.py",
+      "filePath": "agents/orchestrator.py",
+      "summary": "Top-level driver for the dual-critic gated loop. Runs initial creation, auto-refinement (behavioral\u00e2\u2020\u2019vlm\u00e2\u2020\u2019translator\u00e2\u2020\u2019editor\u00e2\u2020\u2019judge), escalation on stuck, and optional post-loop hython validation.",
+      "tags": [
+        "orchestrator",
+        "loop",
+        "pipeline",
+        "gated",
+        "dual-critic"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:agents/orchestrator.py:Orchestrator",
+      "type": "class",
+      "name": "Orchestrator",
+      "filePath": "agents/orchestrator.py",
+      "summary": "Composes all agents and drives the 5-phase pipeline: initial creation, auto-refinement loop, escalation on stuck, and optional hython post-validation.",
+      "tags": [
+        "orchestrator",
+        "pipeline",
+        "class",
+        "loop"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:agents/orchestrator.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "agents/orchestrator.py",
+      "summary": "CLI entrypoint that parses arguments, constructs an Orchestrator, runs it with the given prompt, and prints the final decision.",
+      "tags": [
+        "cli",
+        "entrypoint",
+        "orchestrator"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:agents/orchestrator.py:_default_hython",
+      "type": "function",
+      "name": "_default_hython",
+      "filePath": "agents/orchestrator.py",
+      "summary": "Returns the default hython.exe path for Houdini 19.5.716 on Windows if it exists.",
+      "tags": [
+        "hython",
+        "windows",
+        "path",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:agents/translator.py",
+      "type": "file",
+      "name": "translator.py",
+      "filePath": "agents/translator.py",
+      "summary": "Maps merged critic feedback (behavioral + perceptual) to a Houdini action list. Currently uses deterministic mock rules; designed to be wired to a real LLM in Phase 4+.",
+      "tags": [
+        "translator",
+        "feedback",
+        "actions",
+        "mock",
+        "llm"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:agents/translator.py:Translator",
+      "type": "class",
+      "name": "Translator",
+      "filePath": "agents/translator.py",
+      "summary": "Translates behavioral and perceptual feedback into Houdini action dicts in either parametric (tweak parms) or structural (rebuild subgraph) mode.",
+      "tags": [
+        "translator",
+        "class",
+        "parametric",
+        "structural",
+        "actions"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:agents/vlm_critic.py",
+      "type": "file",
+      "name": "vlm_critic.py",
+      "filePath": "agents/vlm_critic.py",
+      "summary": "Perceptual critic gated on behavioral pass. Phase 3 mock returns a climbing intent_match curve; Phase 5 will wire a real VLM (GPT-4V/Claude vision).",
+      "tags": [
+        "vlm",
+        "critic",
+        "perceptual",
+        "mock",
+        "intent"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:agents/vlm_critic.py:VLMCritic",
+      "type": "class",
+      "name": "VLMCritic",
+      "filePath": "agents/vlm_critic.py",
+      "summary": "Evaluates visual intent match; skips (emits a marker) if behavioral failed, otherwise returns a mock intent_match score per a predefined curve.",
+      "tags": [
+        "vlm",
+        "critic",
+        "class",
+        "intent",
+        "gated"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:loop_monitor/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "loop_monitor/__init__.py",
+      "summary": "Empty package initializer for the loop_monitor module.",
+      "tags": [
+        "package",
+        "init",
+        "loop_monitor"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:loop_monitor/graphpaint.py",
+      "type": "file",
+      "name": "graphpaint.py",
+      "filePath": "loop_monitor/graphpaint.py",
+      "summary": "Paints agentic-loop state (touched/error/ok colors) onto the Houdini network editor nodes, tagging only its own marks so artist colors remain intact.",
+      "tags": [
+        "houdini",
+        "network-editor",
+        "paint",
+        "visualization",
+        "loop-monitor"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:loop_monitor/graphpaint.py:paint_iteration",
+      "type": "function",
+      "name": "paint_iteration",
+      "filePath": "loop_monitor/graphpaint.py",
+      "summary": "Colors nodes the editor touched in a given iteration: red for cook errors, green for clean cooks.",
+      "tags": [
+        "paint",
+        "visualization",
+        "houdini",
+        "iteration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:loop_monitor/graphpaint.py:clear_paint",
+      "type": "function",
+      "name": "clear_paint",
+      "filePath": "loop_monitor/graphpaint.py",
+      "summary": "Removes only marks added by this tool, restoring neutral color without touching artist-set colors.",
+      "tags": [
+        "paint",
+        "clear",
+        "houdini",
+        "non-destructive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:loop_monitor/panel.py",
+      "type": "file",
+      "name": "panel.py",
+      "filePath": "loop_monitor/panel.py",
+      "summary": "In-Houdini Loop Monitor Python Panel widget that polls events.jsonl on a QTimer, displays convergence series and per-agent detail, and delegates network-editor painting to graphpaint.",
+      "tags": [
+        "houdini",
+        "panel",
+        "loop-monitor",
+        "pyside2",
+        "polling"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:loop_monitor/panel.py:LoopMonitorPanel",
+      "type": "class",
+      "name": "LoopMonitorPanel",
+      "filePath": "loop_monitor/panel.py",
+      "summary": "Qt widget that discovers run directories, polls events.jsonl every 2 seconds, displays convergence metrics and per-iteration agent detail, and triggers network-editor paint.",
+      "tags": [
+        "panel",
+        "class",
+        "pyside2",
+        "polling",
+        "houdini"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:monitor/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "monitor/__init__.py",
+      "summary": "Empty package initializer for the monitor module.",
+      "tags": [
+        "package",
+        "init",
+        "monitor"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:monitor/app.py",
+      "type": "file",
+      "name": "app.py",
+      "filePath": "monitor/app.py",
+      "summary": "Streamlit dashboard that visualizes the agentic loop in real time: timeline, convergence chart, and per-iteration node-graph diff between translator requests and editor actions.",
+      "tags": [
+        "streamlit",
+        "dashboard",
+        "monitor",
+        "visualization",
+        "real-time"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:monitor/app.py:dashboard",
+      "type": "function",
+      "name": "dashboard",
+      "filePath": "monitor/app.py",
+      "summary": "Streamlit fragment that auto-refreshes every 2 seconds: reads events, renders timeline, convergence line chart, and delegates iteration detail to render_detail.",
+      "tags": [
+        "streamlit",
+        "dashboard",
+        "fragment",
+        "auto-refresh"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:monitor/app.py:render_detail",
+      "type": "function",
+      "name": "render_detail",
+      "filePath": "monitor/app.py",
+      "summary": "Renders a three-column detail view for a selected iteration: observation image, behavioral/VLM JSON, and translator/editor JSON plus node-graph diff table.",
+      "tags": [
+        "streamlit",
+        "detail",
+        "iteration",
+        "visualization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:monitor/eventlog.py",
+      "type": "file",
+      "name": "eventlog.py",
+      "filePath": "monitor/eventlog.py",
+      "summary": "Shared event-log reader imported by both the Streamlit and Houdini UIs. Provides JSONL parsing, iteration grouping, agent event lookup, status summarization, and convergence series building.",
+      "tags": [
+        "eventlog",
+        "jsonl",
+        "shared",
+        "reader",
+        "convergence"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:monitor/eventlog.py:read_events",
+      "type": "function",
+      "name": "read_events",
+      "filePath": "monitor/eventlog.py",
+      "summary": "Parses events.jsonl, tolerating partial trailing lines from live appends.",
+      "tags": [
+        "parser",
+        "jsonl",
+        "events"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:monitor/eventlog.py:group_by_iteration",
+      "type": "function",
+      "name": "group_by_iteration",
+      "filePath": "monitor/eventlog.py",
+      "summary": "Groups flat event list into a dict keyed by iteration number.",
+      "tags": [
+        "grouping",
+        "iteration",
+        "events"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:monitor/eventlog.py:find_event",
+      "type": "function",
+      "name": "find_event",
+      "filePath": "monitor/eventlog.py",
+      "summary": "Returns the last payload emitted by a named agent within an iteration bucket.",
+      "tags": [
+        "lookup",
+        "agent",
+        "payload"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:monitor/eventlog.py:latest_status",
+      "type": "function",
+      "name": "latest_status",
+      "filePath": "monitor/eventlog.py",
+      "summary": "Scans all events and returns the most recent convergence-judge decision and iteration count.",
+      "tags": [
+        "status",
+        "convergence",
+        "summary"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:monitor/eventlog.py:build_convergence_series",
+      "type": "function",
+      "name": "build_convergence_series",
+      "filePath": "monitor/eventlog.py",
+      "summary": "Builds a list of per-iteration rows with intent_match and behavioral_pass_rate for charting.",
+      "tags": [
+        "convergence",
+        "series",
+        "chart",
+        "metrics"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/mock_run.py",
+      "type": "file",
+      "name": "mock_run.py",
+      "filePath": "scripts/mock_run.py",
+      "summary": "Script that emits a synthetic 5-iteration events.jsonl to validate the Streamlit dashboard before any live Houdini connection is available.",
+      "tags": [
+        "mock",
+        "script",
+        "testing",
+        "dashboard",
+        "synthetic"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/mock_run.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "scripts/mock_run.py",
+      "summary": "CLI entrypoint that generates a configurable number of synthetic iterations and writes them to events.jsonl via emit().",
+      "tags": [
+        "cli",
+        "mock",
+        "entrypoint",
+        "synthetic"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/mock_run.py:_scenario",
+      "type": "function",
+      "name": "_scenario",
+      "filePath": "scripts/mock_run.py",
+      "summary": "Returns per-agent payloads for a single iteration following a scripted 5-iteration convergence scenario (behavioral fail x2, then VLM climb to done).",
+      "tags": [
+        "scenario",
+        "mock",
+        "iteration",
+        "synthetic"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "filePath": "CLAUDE.md",
+      "summary": "Project README for Claude Code covering quick start, pipeline context, MCP connection details, scene structure, naming conventions, coding standards, and workflow rules.",
+      "tags": [
+        "documentation",
+        "readme",
+        "project",
+        "claude-code",
+        "houdini"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.gitignore",
+      "type": "config",
+      "name": ".gitignore",
+      "filePath": ".gitignore",
+      "summary": "Git ignore rules excluding runtime outputs (runs/, __pycache__), Houdini scene files, logs, screenshots, .mcp.json, and Python build artifacts.",
+      "tags": [
+        "git",
+        "ignore",
+        "config"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.gitmodules",
+      "type": "config",
+      "name": ".gitmodules",
+      "filePath": ".gitmodules",
+      "summary": "Declares five git submodules: fxhoudinimcp (vendored twice), GPTEval3D, houdini-mcp (oculairmedia), and ll3m under the Cowork/ directory.",
+      "tags": [
+        "git",
+        "submodules",
+        "config",
+        "cowork"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.mcp.json",
+      "type": "config",
+      "name": ".mcp.json",
+      "filePath": ".mcp.json",
+      "summary": "MCP server configuration wiring context7, sequential-thinking, and the fxhoudinimcp executable (pointing at Houdini localhost:8100) for use by Claude Code.",
+      "tags": [
+        "mcp",
+        "config",
+        "fxhoudinimcp",
+        "claude-code",
+        "server"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:agents/__init__.py",
+      "target": "file:agents/behavioral_checks.py",
+      "type": "related",
+      "weight": 0.5,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_checks.py",
+      "target": "function:agents/behavioral_checks.py:_sample_range",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_checks.py",
+      "target": "function:agents/behavioral_checks.py:structural_checks",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_checks.py",
+      "target": "function:agents/behavioral_checks.py:parametric_sweep",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_checks.py",
+      "target": "function:agents/behavioral_checks.py:frame_sweep",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_checks.py",
+      "target": "function:agents/behavioral_checks.py:evaluate",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "function:agents/behavioral_checks.py:evaluate",
+      "target": "function:agents/behavioral_checks.py:structural_checks",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:agents/behavioral_checks.py:evaluate",
+      "target": "function:agents/behavioral_checks.py:parametric_sweep",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:agents/behavioral_checks.py:evaluate",
+      "target": "function:agents/behavioral_checks.py:frame_sweep",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:agents/behavioral_checks.py:parametric_sweep",
+      "target": "function:agents/behavioral_checks.py:_sample_range",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_critic.py",
+      "target": "class:agents/behavioral_critic.py:BehavioralCritic",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_critic.py",
+      "target": "file:agents/emit.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_critic.py",
+      "target": "file:agents/houdini_client.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/behavioral_critic.py:BehavioralCritic",
+      "target": "class:agents/houdini_client.py:FxHoudiniMCPClient",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/behavioral_critic.py:BehavioralCritic",
+      "target": "function:agents/emit.py:emit",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/behavioral_critic.py:BehavioralCritic",
+      "target": "file:agents/behavioral_checks.py",
+      "type": "related",
+      "weight": 0.5,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_critic_runner.py",
+      "target": "function:agents/behavioral_critic_runner.py:main",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_critic_runner.py",
+      "target": "file:agents/behavioral_checks.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/behavioral_critic_runner.py",
+      "target": "file:agents/emit.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "function:agents/behavioral_critic_runner.py:main",
+      "target": "function:agents/behavioral_checks.py:evaluate",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:agents/behavioral_critic_runner.py:main",
+      "target": "function:agents/emit.py:emit",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/convergence_judge.py",
+      "target": "class:agents/convergence_judge.py:ConvergenceJudge",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/convergence_judge.py",
+      "target": "file:agents/emit.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/convergence_judge.py:ConvergenceJudge",
+      "target": "function:agents/emit.py:emit",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/editor.py",
+      "target": "class:agents/editor.py:Editor",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/editor.py",
+      "target": "file:agents/emit.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/editor.py",
+      "target": "file:agents/houdini_client.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/editor.py:Editor",
+      "target": "function:agents/emit.py:emit",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/editor.py:Editor",
+      "target": "class:agents/houdini_client.py:HoudiniClient",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/emit.py",
+      "target": "function:agents/emit.py:new_run_id",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/emit.py",
+      "target": "function:agents/emit.py:emit",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/emit.py",
+      "target": "class:agents/emit.py:Timer",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/houdini_client.py",
+      "target": "class:agents/houdini_client.py:HoudiniClient",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/houdini_client.py",
+      "target": "class:agents/houdini_client.py:MockHoudiniClient",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/houdini_client.py",
+      "target": "class:agents/houdini_client.py:FxHoudiniMCPClient",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/houdini_client.py",
+      "target": "class:agents/houdini_client.py:HoudiniBridgeError",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/houdini_client.py",
+      "target": "function:agents/houdini_client.py:make_client",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "function:agents/houdini_client.py:make_client",
+      "target": "class:agents/houdini_client.py:MockHoudiniClient",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:agents/houdini_client.py:make_client",
+      "target": "class:agents/houdini_client.py:FxHoudiniMCPClient",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "class:agents/orchestrator.py:Orchestrator",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "function:agents/orchestrator.py:main",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "function:agents/orchestrator.py:_default_hython",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "file:agents/behavioral_critic.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "file:agents/convergence_judge.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "file:agents/editor.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "file:agents/emit.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "file:agents/houdini_client.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "file:agents/translator.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/orchestrator.py",
+      "target": "file:agents/vlm_critic.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/orchestrator.py:Orchestrator",
+      "target": "class:agents/behavioral_critic.py:BehavioralCritic",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/orchestrator.py:Orchestrator",
+      "target": "class:agents/convergence_judge.py:ConvergenceJudge",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/orchestrator.py:Orchestrator",
+      "target": "class:agents/editor.py:Editor",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/orchestrator.py:Orchestrator",
+      "target": "class:agents/translator.py:Translator",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/orchestrator.py:Orchestrator",
+      "target": "class:agents/vlm_critic.py:VLMCritic",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/orchestrator.py:Orchestrator",
+      "target": "function:agents/houdini_client.py:make_client",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/orchestrator.py:Orchestrator",
+      "target": "function:agents/emit.py:emit",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/translator.py",
+      "target": "class:agents/translator.py:Translator",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/translator.py",
+      "target": "file:agents/emit.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/translator.py:Translator",
+      "target": "function:agents/emit.py:emit",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/vlm_critic.py",
+      "target": "class:agents/vlm_critic.py:VLMCritic",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:agents/vlm_critic.py",
+      "target": "file:agents/emit.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "class:agents/vlm_critic.py:VLMCritic",
+      "target": "function:agents/emit.py:emit",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:loop_monitor/__init__.py",
+      "target": "file:loop_monitor/graphpaint.py",
+      "type": "related",
+      "weight": 0.5,
+      "direction": "forward"
+    },
+    {
+      "source": "file:loop_monitor/graphpaint.py",
+      "target": "function:loop_monitor/graphpaint.py:paint_iteration",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:loop_monitor/graphpaint.py",
+      "target": "function:loop_monitor/graphpaint.py:clear_paint",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:loop_monitor/panel.py",
+      "target": "class:loop_monitor/panel.py:LoopMonitorPanel",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:loop_monitor/panel.py",
+      "target": "file:monitor/eventlog.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:loop_monitor/panel.py",
+      "target": "file:loop_monitor/graphpaint.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "class:loop_monitor/panel.py:LoopMonitorPanel",
+      "target": "function:loop_monitor/graphpaint.py:paint_iteration",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:loop_monitor/panel.py:LoopMonitorPanel",
+      "target": "function:loop_monitor/graphpaint.py:clear_paint",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:loop_monitor/panel.py:LoopMonitorPanel",
+      "target": "function:monitor/eventlog.py:read_events",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:loop_monitor/panel.py:LoopMonitorPanel",
+      "target": "function:monitor/eventlog.py:group_by_iteration",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:loop_monitor/panel.py:LoopMonitorPanel",
+      "target": "function:monitor/eventlog.py:latest_status",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "class:loop_monitor/panel.py:LoopMonitorPanel",
+      "target": "function:monitor/eventlog.py:build_convergence_series",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:monitor/__init__.py",
+      "target": "file:monitor/eventlog.py",
+      "type": "related",
+      "weight": 0.5,
+      "direction": "forward"
+    },
+    {
+      "source": "file:monitor/app.py",
+      "target": "function:monitor/app.py:dashboard",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:monitor/app.py",
+      "target": "function:monitor/app.py:render_detail",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:monitor/app.py",
+      "target": "file:monitor/eventlog.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "function:monitor/app.py:dashboard",
+      "target": "function:monitor/eventlog.py:read_events",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:monitor/app.py:dashboard",
+      "target": "function:monitor/eventlog.py:group_by_iteration",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:monitor/app.py:dashboard",
+      "target": "function:monitor/eventlog.py:latest_status",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:monitor/app.py:dashboard",
+      "target": "function:monitor/eventlog.py:build_convergence_series",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:monitor/app.py:render_detail",
+      "target": "function:monitor/eventlog.py:find_event",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:monitor/eventlog.py",
+      "target": "function:monitor/eventlog.py:read_events",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:monitor/eventlog.py",
+      "target": "function:monitor/eventlog.py:group_by_iteration",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:monitor/eventlog.py",
+      "target": "function:monitor/eventlog.py:find_event",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:monitor/eventlog.py",
+      "target": "function:monitor/eventlog.py:latest_status",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:monitor/eventlog.py",
+      "target": "function:monitor/eventlog.py:build_convergence_series",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:scripts/mock_run.py",
+      "target": "function:scripts/mock_run.py:main",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:scripts/mock_run.py",
+      "target": "function:scripts/mock_run.py:_scenario",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:scripts/mock_run.py",
+      "target": "file:agents/emit.py",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "function:scripts/mock_run.py:main",
+      "target": "function:agents/emit.py:emit",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:scripts/mock_run.py:main",
+      "target": "function:scripts/mock_run.py:_scenario",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "config:.mcp.json",
+      "target": "file:agents/houdini_client.py",
+      "type": "configures",
+      "weight": 0.6,
+      "direction": "forward"
+    },
+    {
+      "source": "document:CLAUDE.md",
+      "target": "file:agents/orchestrator.py",
+      "type": "documents",
+      "weight": 0.5,
+      "direction": "forward"
+    },
+    {
+      "source": "document:CLAUDE.md",
+      "target": "file:agents/houdini_client.py",
+      "type": "documents",
+      "weight": 0.5,
+      "direction": "forward"
+    },
+    {
+      "source": "document:CLAUDE.md",
+      "target": "file:monitor/app.py",
+      "type": "documents",
+      "weight": 0.5,
+      "direction": "forward"
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:orchestration",
+      "name": "Orchestration",
+      "description": "Core agentic loop control \u00e2\u20ac\u201d drives the dual-critic gated pipeline, translates intent, and judges convergence",
+      "nodeIds": [
+        "file:agents/orchestrator.py",
+        "file:agents/translator.py",
+        "file:agents/convergence_judge.py"
+      ]
+    },
+    {
+      "id": "layer:agents-critics",
+      "name": "Agents / Critics",
+      "description": "Individual critic agents and editor \u00e2\u20ac\u201d behavioral validation inside Houdini, VLM viewport scoring, and SOP/VEX edits",
+      "nodeIds": [
+        "file:agents/behavioral_critic.py",
+        "file:agents/behavioral_critic_runner.py",
+        "file:agents/behavioral_checks.py",
+        "file:agents/vlm_critic.py",
+        "file:agents/editor.py"
+      ]
+    },
+    {
+      "id": "layer:houdini-bridge",
+      "name": "Houdini Bridge",
+      "description": "MCP client and connection layer \u00e2\u20ac\u201d HTTP client for fxhoudinimcp and its server configuration",
+      "nodeIds": [
+        "file:agents/houdini_client.py",
+        "config:.mcp.json"
+      ]
+    },
+    {
+      "id": "layer:infrastructure",
+      "name": "Infrastructure",
+      "description": "Event emission and event log \u00e2\u20ac\u201d shared plumbing for pipeline observability and inter-component communication",
+      "nodeIds": [
+        "file:agents/emit.py",
+        "file:monitor/eventlog.py"
+      ]
+    },
+    {
+      "id": "layer:monitoring-ui",
+      "name": "Monitoring / UI",
+      "description": "Dashboards and Houdini panel UIs \u00e2\u20ac\u201d Streamlit monitor, loop convergence panel, graph painter, and standalone Claude panel",
+      "nodeIds": [
+        "file:monitor/app.py",
+        "file:loop_monitor/panel.py",
+        "file:loop_monitor/graphpaint.py"
+      ]
+    },
+    {
+      "id": "layer:utilities-scripts",
+      "name": "Utilities / Scripts",
+      "description": "Standalone scripts and package init files \u00e2\u20ac\u201d mock runner for offline testing and Python package markers",
+      "nodeIds": [
+        "file:scripts/mock_run.py",
+        "file:agents/__init__.py",
+        "file:loop_monitor/__init__.py",
+        "file:monitor/__init__.py"
+      ]
+    },
+    {
+      "id": "layer:documentation-config",
+      "name": "Documentation / Config",
+      "description": "Project documentation and repository configuration files",
+      "nodeIds": [
+        "document:CLAUDE.md",
+        "config:.gitignore",
+        "config:.gitmodules"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Project Overview",
+      "description": "Start here to understand the project's purpose, conventions, and pipeline context. CLAUDE.md defines the scene structure, naming rules, coding standards, and workflow rules that govern every other file in this repo.",
+      "nodeIds": [
+        "document:CLAUDE.md"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "MCP Connection Layer",
+      "description": "The MCP bridge is what makes Houdini remotely controllable. houdini_client.py is the HTTP client that speaks to the fxhoudinimcp server running on localhost:8100, and .mcp.json holds the connection config that registers the server with Claude Code.",
+      "nodeIds": [
+        "file:agents/houdini_client.py",
+        "config:.mcp.json"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Orchestrator \u00e2\u20ac\u201d Loop Entry Point",
+      "description": "orchestrator.py is the main driver of the agentic pipeline. It coordinates all agents in a gated loop: translate intent, apply edits, run critics, judge convergence, then repeat or stop. Reading this file gives you the full control flow before diving into individual components.",
+      "nodeIds": [
+        "file:agents/orchestrator.py"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "Translator and Editor \u00e2\u20ac\u201d Intent to Action",
+      "description": "translator.py converts a natural language goal into concrete Houdini operations (node creation, parameter edits, VEX). editor.py takes that plan and applies the actual changes to the live Houdini session via the MCP bridge. Together they form the 'write' half of the loop.",
+      "nodeIds": [
+        "file:agents/translator.py",
+        "file:agents/editor.py"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "Behavioral Critic \u00e2\u20ac\u201d Geometry Validation",
+      "description": "behavioral_critic.py ships Python/VEX check scripts into Houdini and scores the geometry against behavioral rules. behavioral_checks.py contains the actual validation logic that runs inside Houdini, and behavioral_critic_runner.py invokes it via a hython subprocess to keep it isolated from the orchestrator process.",
+      "nodeIds": [
+        "file:agents/behavioral_critic.py",
+        "file:agents/behavioral_checks.py",
+        "file:agents/behavioral_critic_runner.py"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "VLM Critic and Convergence Judge",
+      "description": "vlm_critic.py captures a viewport screenshot and uses a vision model to score the visual result against the original intent. convergence_judge.py weighs both critic scores and decides whether the loop has converged or should iterate again \u00e2\u20ac\u201d it is the gate that terminates the agentic loop.",
+      "nodeIds": [
+        "file:agents/vlm_critic.py",
+        "file:agents/convergence_judge.py"
+      ]
+    },
+    {
+      "order": 7,
+      "title": "Event Infrastructure",
+      "description": "emit.py provides the event emitter used by all agents to log pipeline events to a shared event log. monitor/eventlog.py is the reader/writer for that log. This infrastructure is what connects the running pipeline to all monitoring UIs.",
+      "nodeIds": [
+        "file:agents/emit.py",
+        "file:monitor/eventlog.py"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Monitoring and UI",
+      "description": "monitor/app.py is the Streamlit dashboard that visualises the live event log, while loop_monitor/panel.py and loop_monitor/graphpaint.py provide an equivalent panel directly inside Houdini, painting the convergence graph in real time. scripts/mock_run.py lets you test the full pipeline without a live Houdini session.",
+      "nodeIds": [
+        "file:monitor/app.py",
+        "file:loop_monitor/panel.py",
+        "file:scripts/mock_run.py"
+      ]
+    }
+  ]
+}

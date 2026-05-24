@@ -1,0 +1,1255 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "af277e9d61882febd8b86c4cd875a4f1e6203dd4",
+  "generatedAt": "2026-05-24T05:07:31.981Z",
+  "files": {
+    "agents/__init__.py": {
+      "filePath": "agents/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "agents/behavioral_checks.py": {
+      "filePath": "agents/behavioral_checks.py",
+      "contentHash": "0cf3dcbb317f560866fb3f53f3b6f238e42d740f8cafad1954b3cae7866db3e0",
+      "functions": [
+        {
+          "name": "_sample_range",
+          "params": [
+            "lo",
+            "hi",
+            "n"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "structural_checks",
+          "params": [
+            "geo"
+          ],
+          "returnType": "list",
+          "exported": true,
+          "lineCount": 33
+        },
+        {
+          "name": "parametric_sweep",
+          "params": [
+            "node",
+            "parm_names",
+            "samples"
+          ],
+          "exported": true,
+          "lineCount": 43
+        },
+        {
+          "name": "frame_sweep",
+          "params": [
+            "node",
+            "frames"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "evaluate",
+          "params": [
+            "node_path",
+            "parm_sweep",
+            "samples"
+          ],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "_sample_range",
+        "structural_checks",
+        "parametric_sweep",
+        "frame_sweep",
+        "evaluate"
+      ],
+      "totalLines": 172,
+      "hasStructuralAnalysis": true
+    },
+    "agents/behavioral_critic.py": {
+      "filePath": "agents/behavioral_critic.py",
+      "contentHash": "605aca257d52b026de9a3021289a5ccee4eef74b2cb78610211bb6b9fa7a7e64",
+      "functions": [],
+      "classes": [
+        {
+          "name": "BehavioralCritic",
+          "methods": [
+            "__init__",
+            "evaluate",
+            "_mock",
+            "_live"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 96
+        }
+      ],
+      "imports": [
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "agents.emit",
+          "specifiers": [
+            "emit",
+            "Timer"
+          ]
+        },
+        {
+          "source": "agents.houdini_client",
+          "specifiers": [
+            "FxHoudiniMCPClient",
+            "HoudiniBridgeError",
+            "HoudiniClient"
+          ]
+        }
+      ],
+      "exports": [
+        "BehavioralCritic"
+      ],
+      "totalLines": 128,
+      "hasStructuralAnalysis": true
+    },
+    "agents/behavioral_critic_runner.py": {
+      "filePath": "agents/behavioral_critic_runner.py",
+      "contentHash": "9403a6b2c3e589f7dd0ba3aa39d3b314c0205c9434e250831ead59f3db88909e",
+      "functions": [
+        {
+          "name": "main",
+          "params": [],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "traceback",
+          "specifiers": [
+            "traceback"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "agents.behavioral_checks",
+          "specifiers": [
+            "evaluate"
+          ]
+        },
+        {
+          "source": "agents.emit",
+          "specifiers": [
+            "emit"
+          ]
+        }
+      ],
+      "exports": [
+        "main"
+      ],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    "agents/convergence_judge.py": {
+      "filePath": "agents/convergence_judge.py",
+      "contentHash": "7ba280f4704a9118ec8ed9c9543b4d8ee55d98fcfe6fcd965848f663ba46efe1",
+      "functions": [],
+      "classes": [
+        {
+          "name": "ConvergenceJudge",
+          "methods": [
+            "__init__",
+            "decide",
+            "_delta",
+            "_behavioral_rate",
+            "_decide",
+            "_reason"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 70
+        }
+      ],
+      "imports": [
+        {
+          "source": "agents.emit",
+          "specifiers": [
+            "emit",
+            "Timer"
+          ]
+        }
+      ],
+      "exports": [
+        "ConvergenceJudge"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "agents/editor.py": {
+      "filePath": "agents/editor.py",
+      "contentHash": "c036d841cd3656d4cc27b519bc77d9bce5c00b7166d51a3fd78ecf745e5c54ee",
+      "functions": [],
+      "classes": [
+        {
+          "name": "Editor",
+          "methods": [
+            "__init__",
+            "execute"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 63
+        }
+      ],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "agents.emit",
+          "specifiers": [
+            "emit",
+            "Timer"
+          ]
+        },
+        {
+          "source": "agents.houdini_client",
+          "specifiers": [
+            "HoudiniClient",
+            "HoudiniBridgeError"
+          ]
+        }
+      ],
+      "exports": [
+        "Editor"
+      ],
+      "totalLines": 77,
+      "hasStructuralAnalysis": true
+    },
+    "agents/emit.py": {
+      "filePath": "agents/emit.py",
+      "contentHash": "6cf9828e3f4d812a82d7ca99f0cec574d84e0b03f43d86231cd58ca7b40a303c",
+      "functions": [
+        {
+          "name": "new_run_id",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "run_dir",
+          "params": [
+            "run_id"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "events_path",
+          "params": [
+            "run_id"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "emit",
+          "params": [
+            "run_id",
+            "iteration",
+            "step_id",
+            "agent",
+            "event_type",
+            "payload",
+            "duration_ms"
+          ],
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "classes": [
+        {
+          "name": "Timer",
+          "methods": [
+            "__enter__",
+            "__exit__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "uuid",
+          "specifiers": [
+            "uuid"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timezone"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        }
+      ],
+      "exports": [
+        "new_run_id",
+        "run_dir",
+        "events_path",
+        "emit",
+        "Timer"
+      ],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
+    "agents/houdini_client.py": {
+      "filePath": "agents/houdini_client.py",
+      "contentHash": "5c1fd12e92d88393ebcc871fca37c6153107b08a66d5d2e420aefb5c2a62c5b3",
+      "functions": [
+        {
+          "name": "make_client",
+          "params": [
+            "mode"
+          ],
+          "returnType": "HoudiniClient",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "ActionResult",
+          "methods": [],
+          "properties": [
+            "node_path",
+            "call",
+            "result",
+            "before",
+            "after"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "HoudiniClient",
+          "methods": [
+            "create_node",
+            "set_parm",
+            "get_parm",
+            "connect",
+            "cook",
+            "node_graph_json"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "MockHoudiniClient",
+          "methods": [
+            "create_node",
+            "set_parm",
+            "get_parm",
+            "connect",
+            "cook",
+            "node_graph_json"
+          ],
+          "properties": [
+            "parms",
+            "graph"
+          ],
+          "exported": true,
+          "lineCount": 47
+        },
+        {
+          "name": "HoudiniBridgeError",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "FxHoudiniMCPClient",
+          "methods": [
+            "_url",
+            "_rpc",
+            "create_node",
+            "set_parm",
+            "get_parm",
+            "connect",
+            "execute_python",
+            "cook",
+            "node_graph_json",
+            "health"
+          ],
+          "properties": [
+            "host",
+            "port",
+            "timeout"
+          ],
+          "exported": true,
+          "lineCount": 190
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "urllib.error",
+          "specifiers": [
+            "urllib.error"
+          ]
+        },
+        {
+          "source": "urllib.parse",
+          "specifiers": [
+            "urllib.parse"
+          ]
+        },
+        {
+          "source": "urllib.request",
+          "specifiers": [
+            "urllib.request"
+          ]
+        },
+        {
+          "source": "uuid",
+          "specifiers": [
+            "uuid"
+          ]
+        },
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass",
+            "field"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any",
+            "Protocol"
+          ]
+        }
+      ],
+      "exports": [
+        "ActionResult",
+        "HoudiniClient",
+        "MockHoudiniClient",
+        "HoudiniBridgeError",
+        "FxHoudiniMCPClient",
+        "make_client"
+      ],
+      "totalLines": 292,
+      "hasStructuralAnalysis": true
+    },
+    "agents/orchestrator.py": {
+      "filePath": "agents/orchestrator.py",
+      "contentHash": "2a4fcd1797152675cb2d54c496d6638d3f468c309d2bcf059d0aeaec46ffc2e1",
+      "functions": [
+        {
+          "name": "_default_hython",
+          "params": [],
+          "returnType": "str | None",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "classes": [
+        {
+          "name": "Orchestrator",
+          "methods": [
+            "__init__",
+            "run",
+            "_initial_creation",
+            "_auto_refinement",
+            "_escalate",
+            "_post_validate"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 180
+        }
+      ],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "shutil",
+          "specifiers": [
+            "shutil"
+          ]
+        },
+        {
+          "source": "subprocess",
+          "specifiers": [
+            "subprocess"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "agents.behavioral_critic",
+          "specifiers": [
+            "BehavioralCritic"
+          ]
+        },
+        {
+          "source": "agents.convergence_judge",
+          "specifiers": [
+            "ConvergenceJudge"
+          ]
+        },
+        {
+          "source": "agents.editor",
+          "specifiers": [
+            "Editor"
+          ]
+        },
+        {
+          "source": "agents.emit",
+          "specifiers": [
+            "emit",
+            "events_path",
+            "new_run_id",
+            "run_dir"
+          ]
+        },
+        {
+          "source": "agents.houdini_client",
+          "specifiers": [
+            "FxHoudiniMCPClient",
+            "make_client"
+          ]
+        },
+        {
+          "source": "agents.translator",
+          "specifiers": [
+            "Translator"
+          ]
+        },
+        {
+          "source": "agents.vlm_critic",
+          "specifiers": [
+            "VLMCritic"
+          ]
+        }
+      ],
+      "exports": [
+        "Orchestrator",
+        "_default_hython",
+        "main"
+      ],
+      "totalLines": 254,
+      "hasStructuralAnalysis": true
+    },
+    "agents/translator.py": {
+      "filePath": "agents/translator.py",
+      "contentHash": "facb7d5ca006576c4f9b05a9633266971b6273ce6c56d53b7dc89edf09bf1a91",
+      "functions": [],
+      "classes": [
+        {
+          "name": "Translator",
+          "methods": [
+            "__init__",
+            "translate",
+            "set_mode"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 52
+        }
+      ],
+      "imports": [
+        {
+          "source": "agents.emit",
+          "specifiers": [
+            "emit",
+            "Timer"
+          ]
+        }
+      ],
+      "exports": [
+        "Translator"
+      ],
+      "totalLines": 67,
+      "hasStructuralAnalysis": true
+    },
+    "agents/vlm_critic.py": {
+      "filePath": "agents/vlm_critic.py",
+      "contentHash": "b8eb17a9ed9d397b9e11267f15fb4e50a141bc63b2e664d01d72d9da403838ce",
+      "functions": [],
+      "classes": [
+        {
+          "name": "VLMCritic",
+          "methods": [
+            "__init__",
+            "evaluate"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "imports": [
+        {
+          "source": "agents.emit",
+          "specifiers": [
+            "emit",
+            "Timer"
+          ]
+        }
+      ],
+      "exports": [
+        "VLMCritic"
+      ],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "claude_panel.py": {
+      "filePath": "claude_panel.py",
+      "contentHash": "216abc77424843d76d31114a56f3886fe31f003894618639e4c759366abd264f",
+      "functions": [
+        {
+          "name": "_parse_content",
+          "params": [
+            "content"
+          ],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "onCreateInterface",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [
+        {
+          "name": "_ToolRequest",
+          "methods": [
+            "__init__",
+            "wait",
+            "complete"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "CodeBlock",
+          "methods": [
+            "__init__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "MessageBubble",
+          "methods": [
+            "__init__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 35
+        },
+        {
+          "name": "ToolChip",
+          "methods": [
+            "__init__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "ClaudePanel",
+          "methods": [
+            "__init__",
+            "_init_client",
+            "_build_ui",
+            "_set_key",
+            "_clear_chat",
+            "send",
+            "_agent_loop",
+            "_on_tool_execute",
+            "_run_tool",
+            "_call_fxhoudini",
+            "_set_thinking",
+            "_show_tool_status",
+            "_show_response",
+            "_add_bubble",
+            "_scroll_bottom"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 452
+        },
+        {
+          "name": "_ChatInput",
+          "methods": [
+            "keyPressEvent"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide2",
+          "specifiers": [
+            "QtWidgets",
+            "QtCore",
+            "QtGui"
+          ]
+        },
+        {
+          "source": "threading",
+          "specifiers": [
+            "threading"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        }
+      ],
+      "exports": [
+        "_ToolRequest",
+        "CodeBlock",
+        "MessageBubble",
+        "_parse_content",
+        "ToolChip",
+        "ClaudePanel",
+        "_ChatInput",
+        "onCreateInterface"
+      ],
+      "totalLines": 837,
+      "hasStructuralAnalysis": true
+    },
+    "loop_monitor/__init__.py": {
+      "filePath": "loop_monitor/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "loop_monitor/graphpaint.py": {
+      "filePath": "loop_monitor/graphpaint.py",
+      "contentHash": "612d57621fbccd651a843585c064dc120cb86cad8c6ed3d6d221e5186733fc14",
+      "functions": [
+        {
+          "name": "_touched_paths",
+          "params": [
+            "iteration"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "clear_paint",
+          "params": [
+            "root"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "paint_iteration",
+          "params": [
+            "iteration",
+            "root"
+          ],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "hou",
+          "specifiers": [
+            "hou"
+          ]
+        }
+      ],
+      "exports": [
+        "_touched_paths",
+        "clear_paint",
+        "paint_iteration"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "loop_monitor/panel.py": {
+      "filePath": "loop_monitor/panel.py",
+      "contentHash": "b790cfdc836e593944da15a30bcb3346685882b3cf5f5bbd43fc8addc69cdb4d",
+      "functions": [],
+      "classes": [
+        {
+          "name": "LoopMonitorPanel",
+          "methods": [
+            "__init__",
+            "_build_ui",
+            "_discover_runs",
+            "_select_run",
+            "_poll",
+            "_format"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 96
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "hou",
+          "specifiers": [
+            "hou"
+          ]
+        },
+        {
+          "source": "hou.qt",
+          "specifiers": [
+            "QtCore",
+            "QtWidgets"
+          ]
+        },
+        {
+          "source": "monitor.eventlog",
+          "specifiers": [
+            "read_events",
+            "group_by_iteration",
+            "latest_status",
+            "find_event",
+            "build_convergence_series"
+          ]
+        },
+        {
+          "source": "loop_monitor.graphpaint",
+          "specifiers": [
+            "paint_iteration",
+            "clear_paint"
+          ]
+        }
+      ],
+      "exports": [
+        "LoopMonitorPanel"
+      ],
+      "totalLines": 131,
+      "hasStructuralAnalysis": true
+    },
+    "monitor/__init__.py": {
+      "filePath": "monitor/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "monitor/app.py": {
+      "filePath": "monitor/app.py",
+      "contentHash": "992b6847fc44922f55d695b4318ac52905b2e654725b5015179b658894f2f4c6",
+      "functions": [
+        {
+          "name": "get_run_id",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "it_colour",
+          "params": [
+            "it"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_list_runs",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "_graph_diff_rows",
+          "params": [
+            "it"
+          ],
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "dashboard",
+          "params": [],
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "render_detail",
+          "params": [
+            "it"
+          ],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "streamlit",
+          "specifiers": [
+            "st"
+          ]
+        },
+        {
+          "source": "monitor.eventlog",
+          "specifiers": [
+            "read_events",
+            "group_by_iteration",
+            "latest_status",
+            "find_event",
+            "build_convergence_series"
+          ]
+        }
+      ],
+      "exports": [
+        "get_run_id",
+        "it_colour",
+        "_list_runs",
+        "_graph_diff_rows",
+        "dashboard",
+        "render_detail"
+      ],
+      "totalLines": 151,
+      "hasStructuralAnalysis": true
+    },
+    "monitor/eventlog.py": {
+      "filePath": "monitor/eventlog.py",
+      "contentHash": "8b38ea7bbdd145d7887b37a046fa131f365aabaa87f892a347272d2910709450",
+      "functions": [
+        {
+          "name": "read_events",
+          "params": [
+            "path"
+          ],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "group_by_iteration",
+          "params": [
+            "events"
+          ],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "find_event",
+          "params": [
+            "iteration",
+            "agent"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "latest_status",
+          "params": [
+            "events"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "build_convergence_series",
+          "params": [
+            "iters"
+          ],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "collections",
+          "specifiers": [
+            "defaultdict"
+          ]
+        }
+      ],
+      "exports": [
+        "read_events",
+        "group_by_iteration",
+        "find_event",
+        "latest_status",
+        "build_convergence_series"
+      ],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/mock_run.py": {
+      "filePath": "scripts/mock_run.py",
+      "contentHash": "1061191e4937ec9f7cfcf310bab20bbea7e6c750272e2abeadb0804ac8c6812e",
+      "functions": [
+        {
+          "name": "_scenario",
+          "params": [
+            "iteration"
+          ],
+          "exported": true,
+          "lineCount": 76
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": true,
+          "lineCount": 37
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "agents.emit",
+          "specifiers": [
+            "emit",
+            "run_dir",
+            "events_path"
+          ]
+        }
+      ],
+      "exports": [
+        "_scenario",
+        "main"
+      ],
+      "totalLines": 135,
+      "hasStructuralAnalysis": true
+    },
+    "CLAUDE.md": {
+      "filePath": "CLAUDE.md",
+      "contentHash": "143c95983d51e90372661ee27ecfe6ffb71c754e2aec143c047b332695352026",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 59,
+      "hasStructuralAnalysis": true
+    },
+    ".gitignore": {
+      "filePath": ".gitignore",
+      "contentHash": "5de1bca7219a50cfdfe1d56df7a54a7c3d31d08edfdee6cfc403309371912d72",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    ".gitmodules": {
+      "filePath": ".gitmodules",
+      "contentHash": "d8d6769eed6533957e302dfa1ba90df7bf6d5dc3148c34a91eda8488ed462285",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": false
+    },
+    ".mcp.json": {
+      "filePath": ".mcp.json",
+      "contentHash": "7cf9319dec28158ba291052881720ef1891c8fef172b2700439610c2af28c49d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

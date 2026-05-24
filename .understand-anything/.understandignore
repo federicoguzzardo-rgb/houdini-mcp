@@ -1,0 +1,31 @@
+# .understandignore
+# Patterns for files/dirs to exclude from analysis
+#
+
+# Binary and media files
+*.hip
+*.hiplc
+*.hipnc
+*.exr
+*.abc
+*.usd
+*.pypanel
+*.pyc
+*.pyo
+
+# Output/media directories
+render/
+screenshots/
+scenes/
+
+# Submodules (separate codebases)
+fxhoudinimcp/
+Cowork/
+
+# Diagram files
+excalidraw/
+
+# Runtime
+__pycache__/
+monitor.log
+runs/

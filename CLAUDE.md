@@ -56,3 +56,13 @@
 ## Session Behaviour
 - Break complex tasks into checkpoints — confirm with a viewport screenshot at each
 - If a cook error appears, stop and diagnose before continuing
+
+## Knowledge Graph (Understand Anything)
+- Plugin: understand-anything 2.7.4 (Claude Code plugin)
+- Graph: C:\houdini\.understand-anything\knowledge-graph.json
+- Run `/understand` to rebuild or incrementally update the graph after code changes
+- Run `/understand-dashboard` to launch the interactive graph viewer
+- Run `/understand-anything:understand-chat` to ask questions about the codebase
+- Note: if a file is deleted but not yet committed, prune it manually from the graph (git diff won't detect it)
+- Dashboard needs the token URL printed by Vite — always use the `?token=` param
+- pnpm-workspace.yaml has `allowBuilds: true` for all tree-sitter packages (required for plugin build)
