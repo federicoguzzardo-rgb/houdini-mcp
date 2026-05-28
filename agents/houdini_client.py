@@ -268,6 +268,20 @@ class FxHoudiniMCPClient:
         except HoudiniBridgeError:
             return {}
 
+    def capture_viewport_png(self, out_path: str,
+                             width: int = 1280, height: int = 720) -> str:
+        """Save the active Houdini viewport to a PNG file."""
+        code = (
+            "import hou\n"
+            "desktop = hou.ui.curDesktop()\n"
+            "viewer = next((p for p in desktop.paneTabs()\n"
+            "               if isinstance(p, hou.SceneViewer)), None)\n"
+            f"if viewer:\n"
+            f"    viewer.curViewport().saveFrame({out_path!r}, {width}, {height})\n"
+        )
+        self.execute_python(code)
+        return out_path
+
     def health(self) -> dict:
         """Fast endpoint to confirm Houdini + plugin are reachable."""
         body = urllib.parse.urlencode({
